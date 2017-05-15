@@ -1,0 +1,31 @@
+version: '2'
+services:
+  flask:
+    build: .
+    ports:
+     - "80:80"
+    volumes:
+     - ./src:/app
+     - ./uploads:/uploads
+    links:
+     - mariadb
+    environment:
+     - DEBUG=0
+     - DB_HOST=mariadb
+     - DB_USER=root
+     - DB_PSWD=sup3r_p4sswd
+     - DB_NAME=telefons
+     - SESSION_SECRET_KEY=\x1d\xfdv\xb9^\xf4\x15\xe9+\x7f\xb4x\xae\x06\t\xe7B\x0b\x1a="\x82\xd7-
+    restart: always
+
+  mariadb:
+    image: mariadb:10.1
+    volumes:
+     - ./db/scheme/:/docker-entrypoint-initdb.d
+     - ./db/conf/:/etc/mysql/conf.d
+     - ../docker-data/mariadb:/var/lib/mysql
+    environment:
+     - MYSQL_ROOT_PASSWORD=sup3r_p4sswd
+     - MYSQL_DATABASE=telefons
+    restart: always
+
