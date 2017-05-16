@@ -1,0 +1,92 @@
+body {
+	margin: 0;
+	padding: 0;
+	font-size: 18px;
+	font-weight: 300;
+	font-family: 'Lato', sans-serif;
+}
+
+header {
+	background-color: #fafafa;
+	border-bottom: 1px solid #eee;
+	padding: 20px;
+}
+
+main {
+	border-bottom: 1px solid #eee;
+	padding: 40px 0;
+}
+
+footer {
+	text-align: center;
+	font-style: italic;
+	padding: 20px;
+	font-size: 15px;
+	color: #666;
+}
+
+.container {
+	max-width: 750px;
+	margin: 0 auto;
+}
+
+h1 {
+	font-size: 32px;
+}
+
+h2 {
+	font-size: 24px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-weight: normal;
+	margin: 0;
+}
+
+a {
+	text-decoration: none;
+	color: #009dbf;
+}
+
+a.red {
+	color: #F00;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+input[type=text], input[type=password] {
+	margin: 2px 0;
+	font-size: 16px;
+	font-weight: 300;
+	font-family: 'Lato', sans-serif;
+}
+
+.small-caps {
+	text-transform: capitalize;
+	font-variant: small-caps;
+}
+
+.flash {
+	background-color: #f3f8fc;
+	width: 250px;
+	padding: 10px;
+	text-align: center;
+	margin: 20px auto;
+	border: 1px solid #51b1ff;
+	color: #51b1ff;
+	font-weight: 300;
+	text-transform: uppercase;
+	font-size: 15px;
+	position: absolute;
+	top: 5px;
+	left: 50%;
+	margin-left: -125px;
+}
+
+.flash.error {
+	background-color: #fff4f4;
+	border: 1px solid #c60f0f;
+	color: #c60f0f;
+}

@@ -10,7 +10,7 @@ services:
     links:
      - mariadb
     environment:
-     - DEBUG=0
+     - DEBUG=1
      - DB_HOST=mariadb
      - DB_USER=root
      - DB_PSWD=sup3r_p4sswd

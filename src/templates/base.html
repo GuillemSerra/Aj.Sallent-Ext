@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Aj. Sallent - {{ title }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{{ url_for('static', filename='css/base.css') }}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Lato:100,300" rel="stylesheet">
+  </head>
+  <body>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div id="flash">
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+        </div>
+        <script>setTimeout(function() {document.getElementById("flash").style.display = "none";}, 2000);</script>
+      {% endif %}
+    {% endwith %}
+
+    <header>
+      <div class="container">
+        {% if title %}
+        <h1>{{ title }}</h1>
+        {% endif %}
+      </div>
+    </header>
+
+    <main>
+      <div class="container">
+        {% block body %}
+        {% endblock %}
+      </div>
+    </main>
+
+    <footer>
+    developed by Departament TIC
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<form action="" method="post">
+  <input type="text" placeholder="Telèfon" name="tlf"><br>
+  <input type="text" placeholder="Nom" name="nom"><br>
+  <input class="btn" type="submit" value="Afegir">
+</form>
+
+<br>
+
+<a href="{{ url_for('main') }}">Torna a l'inici</a>
+
+{% endblock %}
