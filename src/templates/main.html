@@ -2,24 +2,63 @@
 
 {% block body %}
 
-<form action="" method="post">
+<form action="{{ url_for('buscador') }}" method="post" accept-charset="utf-8">
   <input id="buscador" name="buscador" placeholder="Busca telèfon o nom"></input>
+  <br>
+  <br>
   <input class="btn" type="submit" value="Buscar">
 </form>
 
 <br>
+
+{% if nom %}
+<ul>
+  <li><b>Telèfon</b>: {{ tlf }}</li>
+  <li><b>Nom</b>: {{ nom }}</li>
+</ul>
+{% endif %}
+
+<div id="accordion">
+  {% if nom %}
+  <h3>Modifica el contacte</h3>
+  <div>
+    <form action="{{ url_for('tlf.update') }}" method="post" accept-charset="utf-8">
+      <input name="nou_tlf" placeholder="Nou telèfon"></input>
+      <input name="nou_nom" placeholder="Nou nom"></input>
+      <input type="hidden" name="old_nom" value="{{ nom }}">
+      <input type="hidden" name="old_tlf" value="{{ tlf }}">
+      <br>
+      <br>
+      <input class="btn" type="submit" value="Modificar">
+    </form>
+  </div>
+  {% endif %}
+  
+  <h3>Afegeix un nou contacte</h3>
+  <div>
+    <form action="{{ url_for('tlf.insert') }}" method="post" accept-charset="utf-8">
+      <input type="text" placeholder="Telèfon (màx. 9 caràcters)" name="tlf"><br>
+      <input type="text" placeholder="Nom" name="nom">
+      <br>
+      <br>
+      <input class="btn" type="submit" value="Afegir">
+    </form>
+  </div>
+</div>
+
 <br>
 
-{% if Nom %}
-<p>
-  {{ tlf }}: {{ Nom }}
-</p>
+{% if nom %}
+<form action="{{ url_for('tlf.delete') }}" method="post" accept-charset="utf-8" onsubmit="return confirm('Segur que voleu eliminar aquest contacte?');">
+  <input type="hidden" name="delete_tlf" value="{{ tlf }}">
+  <input type="hidden" name="delete_nom" value="{{ nom }}">
+  <input class="btn" type="submit" value="Esborrar contacte" style="color: white; background: #990000">
+</form>
 {% endif %}
 
 <br>
 <br>
 
-<a href="{{ url_for('tlf.insertTLFView')}}">Afegeix un telèfon</a>
 
 <script>
 $(document).ready(function() {
@@ -32,5 +71,14 @@ $(document).ready(function() {
         });
     });
 });
+</script>
+
+<script>
+  $( function() {
+    $( "#accordion" ).accordion({
+  collapsible: true,
+  active: 0
+    });
+  } );
 </script>
 {% endblock %}

@@ -1,4 +1,5 @@
 create table if not exists telefons (
-       tlf varchar(9) primary key not null,
-       nom text not null
-);
+       id mediumint auto_increment primary key,
+       tlf varchar(9) not null,
+       nom text CHARACTER SET 'utf8' not null
+)DEFAULT CHARSET=utf8;

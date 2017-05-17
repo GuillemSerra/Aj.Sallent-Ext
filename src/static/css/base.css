@@ -74,8 +74,8 @@ input[type=text], input[type=password] {
     padding: 10px;
     text-align: center;
     margin: 20px auto;
-    border: 1px solid #51b1ff;
-    color: #51b1ff;
+    border: 1px solid #008b8b;
+    color: #008b8b;
     font-weight: 300;
     text-transform: uppercase;
     font-size: 15px;
@@ -90,6 +90,37 @@ input[type=text], input[type=password] {
     border: 1px solid #c60f0f;
     color: #c60f0f;
 }
+
+.ui-widget {
+    font-family: 'Lato', sans-serif;
+    font-size: 20px;
+}
+.ui-widget-header {
+    font-family: 'Lato', sans-serif;
+    font-size: 20px;
+}
+.ui-widget-content {
+    font-family: 'Lato', sans-serif;
+    font-size: 20px;
+}
+
+.ui-accordion-header {
+    background-color: transparent;
+    border: 1px solid #008b8b;
+    color: #008b8b; 
+}
+
+.ui-accordion-header-active {
+    background-color: transparent;
+    border: 1px solid #008b8b;
+}
+
+.ui-accordion-content-active {
+    border: 1px solid #008b8b;
+    font-family: 'Lato', sans-serif;
+    font-size: 20px;
+}
+
 .ui-helper-hidden-accessible {
     border: 0;
     clip: rect(0 0 0 0);
@@ -129,6 +160,8 @@ input[type=text], input[type=password] {
 .ui-autocomplete-loading {
     background: white url("../images/loader.gif") right center no-repeat;
 }
+
+
 ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
     font-size: 18px;
     color: black;
