@@ -6,11 +6,10 @@ services:
      - "80:80"
     volumes:
      - ./src:/app
-     - ./uploads:/uploads
     links:
      - mariadb
     environment:
-     - DEBUG=1
+     - DEBUG=0
      - DB_HOST=mariadb
      - DB_USER=root
      - DB_PSWD=sup3r_p4sswd

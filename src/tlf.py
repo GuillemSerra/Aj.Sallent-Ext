@@ -44,3 +44,4 @@ def insertTLFViewPost():
 @blu_tlf.route("/get", methods=['GET'])
 def getAllTLFView():
     return jsonify(getAllTLF())
+

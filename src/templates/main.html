@@ -2,6 +2,23 @@
 
 {% block body %}
 
+<input id="tlf" name="tlf" placeholder="telèfon"></input>
+
+<br>
+<br>
+
 <a href="{{ url_for('tlf.insertTLFView')}}">Afegeix un telèfon</a>
 
+<script>
+$(document).ready(function() {
+    $.ajax({
+        url: '{{ url_for("autocomplete") }}'
+    }).done(function (data) {
+        $('#tlf').autocomplete({
+            source: data.json_list,
+            minLength: 2
+        });
+    });
+});
+</script>
 {% endblock %}
