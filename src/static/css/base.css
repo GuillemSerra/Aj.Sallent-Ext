@@ -1,96 +1,97 @@
 body {
-	margin: 0;
-	padding: 0;
-	font-size: 18px;
-	font-weight: 300;
-	font-family: 'Lato', sans-serif;
+    margin: 0;
+    padding: 0;
+    font-size: 20px;
+    font-weight: 300;
+    font-family: 'Lato', sans-serif;
 }
 
 header {
-	background-color: #fafafa;
-	border-bottom: 1px solid #eee;
-	padding: 20px;
+    background-color: #fafafa;
+    border-bottom: 1px solid #eee;
+    padding: 20px;
 }
 
 main {
-	border-bottom: 1px solid #eee;
-	padding: 40px 0;
+    border-bottom: 1px solid #eee;
+    padding: 40px 0;
 }
 
 footer {
-	text-align: center;
-	font-style: italic;
-	padding: 20px;
-	font-size: 15px;
-	color: #666;
+    text-align: center;
+    font-style: italic;
+    padding: 20px;
+    font-size: 15px;
+    color: #666;
 }
 
 .container {
-	max-width: 750px;
-	margin: 0 auto;
+    max-width: 750px;
+    margin: 0 auto;
 }
 
 h1 {
-	font-size: 32px;
+    font-size: 32px;
 }
 
 h2 {
-	font-size: 24px;
+    font-size: 24px;
 }
 
 h1, h2, h3, h4, h5, h6 {
-	font-weight: normal;
-	margin: 0;
+    font-weight: normal;
+    margin: 0;
 }
 
 a {
-	text-decoration: none;
-	color: #008b8b;
+    text-decoration: none;
+    color: #008b8b;
 }
 
 a.red {
-	color: #F00;
+    color: #F00;
 }
 
 a:hover {
-	text-decoration: underline;
+    text-decoration: underline;
 }
 
 input[type=text], input[type=password] {
-	margin: 2px 0;
-	font-size: 16px;
-	font-weight: 300;
-	font-family: 'Lato', sans-serif;
+    margin: 2px 0;
+    font-size: 20px;
+    font-weight: 300;
+    font-family: 'Lato', sans-serif;
 }
 
 .small-caps {
-	text-transform: capitalize;
-	font-variant: small-caps;
+    text-transform: capitalize;
+    font-variant: small-caps;
 }
 
 .flash {
-	background-color: #f3f8fc;
-	width: 250px;
-	padding: 10px;
-	text-align: center;
-	margin: 20px auto;
-	border: 1px solid #51b1ff;
-	color: #51b1ff;
-	font-weight: 300;
-	text-transform: uppercase;
-	font-size: 15px;
-	position: absolute;
-	top: 5px;
-	left: 50%;
-	margin-left: -125px;
+    background-color: #f3f8fc;
+    width: 250px;
+    padding: 10px;
+    text-align: center;
+    margin: 20px auto;
+    border: 1px solid #51b1ff;
+    color: #51b1ff;
+    font-weight: 300;
+    text-transform: uppercase;
+    font-size: 15px;
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    margin-left: -125px;
 }
 
 .flash.error {
-	background-color: #fff4f4;
-	border: 1px solid #c60f0f;
-	color: #c60f0f;
+    background-color: #fff4f4;
+    border: 1px solid #c60f0f;
+    color: #c60f0f;
 }
-.ui-helper-hidden-accessible { border: 0;
+.ui-helper-hidden-accessible {
+    border: 0;
     clip: rect(0 0 0 0);
     height: 1px;
     margin: -1px;
@@ -100,72 +101,84 @@ input[type=text], input[type=password] {
     width: 1px; 
 }
 .ui-autocomplete .highlight {
-	text-decoration: underline;
-	color: #008b8b;
+    font-family: 'Lato', sans-serif;
+    font-size: 18px;
+
+    text-decoration: underline;
+    color: #008b8b;
+    opacity: 0.6;
 }
 .fixed-height {
-	padding: 1px;
-	max-height: 200px;
-	overflow: auto;
+    padding: 1px;
+    max-height: 200px;
+    overflow: auto;
 }
 .ui-autocomplete-category {
-	font-weight: bold;
-	padding: .2em .4em;
-	margin: .8em 0 .2em;
-	line-height: 1.5;
+    font-family: 'Lato', sans-serif;
+    font-size: 18px;
+    padding: .2em .4em;
+    margin: .8em 0 .2em;
+    line-height: 1.5;
 }
 .ui-menu .ui-menu-item .ui-state-focus {
-  background: #008b8b;
-  border: none;
-  color: #ffffff;
+    background: #008b8b;
+    border: none;
+    color: #ffffff;
+    opacity: 0.5;
 }
-
+.ui-autocomplete-loading {
+    background: white url("../images/loader.gif") right center no-repeat;
+}
 ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+    font-size: 18px;
     color: black;
     opacity: 0.6;
 }
 ::-moz-placeholder { /* Firefox 19+ */
-  color: black;
+    font-size: 18px;
+    color: black;
     opacity: 0.6;
 }
 :-ms-input-placeholder { /* IE 10+ */
-  color: black;
+    font-size: 18px;
+    color: black;
     opacity: 0.6;
 }
 :-moz-placeholder { /* Firefox 18- */
-  color: black;
+    font-size: 18px;
+    color: black;
     opacity: 0.6;
 }
 
 /* latin-ext */
 @font-face {
-  font-family: 'Lato';
-  font-style: normal;
-  font-weight: 100;
-  src: local('Lato Hairline'), local('Lato-Hairline'), url(https://fonts.gstatic.com/s/lato/v13/eFRpvGLEW31oiexbYNx7Y_esZW2xOQ-xsNqO47m55DA.woff2) format('woff2');
-  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 100;
+    src: local('Lato Hairline'), local('Lato-Hairline'), url(https://fonts.gstatic.com/s/lato/v13/eFRpvGLEW31oiexbYNx7Y_esZW2xOQ-xsNqO47m55DA.woff2) format('woff2');
+    unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
 }
 /* latin */
 @font-face {
-  font-family: 'Lato';
-  font-style: normal;
-  font-weight: 100;
-  src: local('Lato Hairline'), local('Lato-Hairline'), url(https://fonts.gstatic.com/s/lato/v13/GtRkRNTnri0g82CjKnEB0Q.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 100;
+    src: local('Lato Hairline'), local('Lato-Hairline'), url(https://fonts.gstatic.com/s/lato/v13/GtRkRNTnri0g82CjKnEB0Q.woff2) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
 }
 /* latin-ext */
 @font-face {
-  font-family: 'Lato';
-  font-style: normal;
-  font-weight: 300;
-  src: local('Lato Light'), local('Lato-Light'), url(https://fonts.gstatic.com/s/lato/v13/dPJ5r9gl3kK6ijoeP1IRsvY6323mHUZFJMgTvxaG2iE.woff2) format('woff2');
-  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 300;
+    src: local('Lato Light'), local('Lato-Light'), url(https://fonts.gstatic.com/s/lato/v13/dPJ5r9gl3kK6ijoeP1IRsvY6323mHUZFJMgTvxaG2iE.woff2) format('woff2');
+    unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
 }
 /* latin */
 @font-face {
-  font-family: 'Lato';
-  font-style: normal;
-  font-weight: 300;
-  src: local('Lato Light'), local('Lato-Light'), url(https://fonts.gstatic.com/s/lato/v13/EsvMC5un3kjyUhB9ZEPPwg.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 300;
+    src: local('Lato Light'), local('Lato-Light'), url(https://fonts.gstatic.com/s/lato/v13/EsvMC5un3kjyUhB9ZEPPwg.woff2) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
 }

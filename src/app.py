@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, redirect, url_for
 from tlf import blu_tlf
 from database import *
 
@@ -20,14 +20,26 @@ app.register_blueprint(blu_tlf, url_prefix='/tlf')
 def main():
     return render_template('main.html', title = "Buscador")
 
-NAMES = ["abc","abcd","abcde","abcdef"]
+@app.route('/', methods = ['POST'])
+def mainPost():
+    busc_value = request.form["buscador"]
 
+    if (len(busc_value) == 0):
+        flash("Escriu telèfon o nom a buscar")
+        return redirect(url_for('main'))
+
+    if busc_value.isdigit():
+        return "tlf"
+    else:
+        return render_template('main.html', Nom = getTLF(busc_value), title = "Buscador", tlf = busc_value)
+    return "OK"
+        
 @app.route("/autocomplete", methods=['GET'])
 def autocomplete():
-    search = request.args.get('tlf')
+    search = request.args.get('buscador')
 
     app.logger.debug(search)
-    return jsonify(json_list=NAMES)
+    return jsonify(json_list=getAllDBList())
 
 if __name__ == "__main__":
     app.debug = 1

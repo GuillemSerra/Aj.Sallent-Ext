@@ -2,7 +2,19 @@
 
 {% block body %}
 
-<input id="tlf" name="tlf" placeholder="telèfon"></input>
+<form action="" method="post">
+  <input id="buscador" name="buscador" placeholder="Busca telèfon o nom"></input>
+  <input class="btn" type="submit" value="Buscar">
+</form>
+
+<br>
+<br>
+
+{% if Nom %}
+<p>
+  {{ tlf }}: {{ Nom }}
+</p>
+{% endif %}
 
 <br>
 <br>
@@ -11,10 +23,10 @@
 
 <script>
 $(document).ready(function() {
-    $.ajax({
+        $.ajax({
         url: '{{ url_for("autocomplete") }}'
     }).done(function (data) {
-        $('#tlf').autocomplete({
+        $('#buscador').autocomplete({
             source: data.json_list,
             minLength: 2
         });

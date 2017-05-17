@@ -12,9 +12,6 @@ def insertTLFView():
 
 @blu_tlf.route("/insert", methods=['POST'])
 def insertTLFViewPost():
-    def all_filled(l):
-        return not any(map(lambda x: x == None or len(x) == 0, request.form))
-
     tlf = request.form['tlf']
     nom = request.form['nom']
 
@@ -28,6 +25,10 @@ def insertTLFViewPost():
     if (len(tlf) > 9):
         flash("Telèfon massa llarg", "error")
         return redirect(url_for('.insertTLFView'))
+
+    if not tlf.isdigit():
+        flash("El telèfon només pot contenir digits", "error")
+        return redirect(url_for('.insertTLFView'))        
 
     if not checkRepeatTLF(tlf):
         flash("Aquest telèfon ja existeix", "error")
@@ -43,5 +44,5 @@ def insertTLFViewPost():
 
 @blu_tlf.route("/get", methods=['GET'])
 def getAllTLFView():
-    return jsonify(getAllTLF())
+    return jsonify(getAllTLFDict())
 

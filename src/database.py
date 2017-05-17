@@ -24,17 +24,34 @@ def updateTLFNom(tlf, nom):
     with connectMariaDB() as cur:
         cur.execute("UPDATE telefons SET nom=%s WHERE tlf=%s", (nom, tlf))
 
-def getAllTLF():
+def getAllDBList():
+    tlfList = []
+    nomList = []
+    
+    with connectMariaDB() as cur:
+        cur.execute("SELECT * FROM telefons")
+        for row in cur.fetchall():
+            tlfList += [row[0]]
+            nomList += [row[1]]
+
+    return tlfList+nomList
+
+def getAllTLFDict():
     tlfDict = {}
     
     with connectMariaDB() as cur:
         cur.execute("SELECT * FROM telefons")
-        
         for row in cur.fetchall():
             tlfDict[row[0]] = row[1]
 
     return tlfDict
-
+           
+def getTLF(nom):
+    with connectMariaDB() as cur:
+        cur.execute("SELECT tlf FROM telefons where nom=%s", (nom,))
+        row = cur.fetchone()
+    return row[0]
+    
 def checkRepeatTLF(tlf):
     with connectMariaDB() as cur:
         cur.execute("SELECT * FROM telefons WHERE tlf=%s", (tlf,))
