@@ -46,6 +46,10 @@ def update():
     old_tlf = request.form['old_tlf']
     old_nom = request.form['old_nom']
 
+    if not nou_tlf.isdigit():
+        flash("El telèfon només pot contenir digits", "error")
+        return render_template('main.html', nom = old_nom, title = "Buscador", tlf = old_tlf)
+    
     if not checkRepeatTLF(nou_tlf):
         flash("Aquest telèfon ja existeix", "error")
         return render_template('main.html', nom = old_nom, title = "Buscador", tlf = old_tlf)
