@@ -30,10 +30,19 @@ def buscador():
         return redirect(url_for('main'))
 
     if busc_value.isdigit():
-        return render_template('main.html', nom = getNom(busc_value), title = "Buscador", tlf = busc_value)
+        result_nom = getNom(busc_value)
+        if result_nom is None:
+            flash("Aquest telèfon no existeix", "error")
+            return redirect(url_for('main'))
+        else:
+            return render_template('main.html', nom = getNom(busc_value), title = "Buscador", tlf = busc_value)
     else:
-        return render_template('main.html', nom = busc_value, title = "Buscador", tlf = getTLF(busc_value))
-    return "OK"
+        result_tlf = getTLF(busc_value)
+        if result_tlf is None:
+            flash("Aquest nom no existeix", "error")
+            return redirect(url_for('main'))
+        else:
+            return render_template('main.html', nom = busc_value, title = "Buscador", tlf = getTLF(busc_value))
         
 @app.route("/autocomplete", methods=['GET'])
 def autocomplete():
@@ -43,6 +52,6 @@ def autocomplete():
     return jsonify(json_list=getAllDBList())
 
 if __name__ == "__main__":
-    app.debug = 1
+    app.debug = 0
     app.run('0.0.0.0', port=80, threaded=True)
 

@@ -46,13 +46,19 @@ def getNom(tlf):
     with connectMariaDB() as cur:
         cur.execute("SELECT nom FROM telefons where tlf=%s", (tlf,))
         row = cur.fetchone()
-    return row[0]
+    if row is None:
+        return None
+    else:
+        return row[0]
            
 def getTLF(nom):
     with connectMariaDB() as cur:
         cur.execute("SELECT tlf FROM telefons where nom=%s", (nom,))
         row = cur.fetchone()
-    return row[0]
+    if row is None:
+        return None
+    else:
+        return row[0]
 
 def updateNom(tlf, nou_nom):
     with connectMariaDB() as cur:
