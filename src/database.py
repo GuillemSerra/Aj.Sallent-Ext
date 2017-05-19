@@ -3,6 +3,7 @@
 
 import MySQLdb as mariadb
 import os
+import re
 
 DB_HOST = os.environ["DB_HOST"] 
 DB_USER = os.environ["DB_USER"] 
@@ -41,7 +42,31 @@ def getAllTLFDict():
             tlfDict[row[1]] = row[2]
 
     return tlfDict
-           
+
+def getAllDBLikeTLF(tlf):
+    contactList = []
+    
+    with connectMariaDB() as cur:
+        cur.execute("SELECT * FROM telefons WHERE tlf LIKE %s", ('%'+tlf+'%',))
+        contacts = cur.fetchall()
+
+        for row in contacts:
+            contactList += [{'tlf': row[1], 'nom': row[2]}]
+
+    return contactList
+
+def getAllDBLikeNom(nom):
+    contactList = []
+    
+    with connectMariaDB() as cur:
+        cur.execute("SELECT * FROM telefons WHERE nom LIKE %s", ('%'+nom+'%',))
+        contacts = cur.fetchall()
+
+        for row in contacts:
+            contactList += [{'tlf': row[1], 'nom': row[2]}]
+
+    return contactList
+
 def getNom(tlf):
     with connectMariaDB() as cur:
         cur.execute("SELECT nom FROM telefons where tlf=%s", (tlf,))
@@ -77,5 +102,10 @@ def checkRepeatNom(nom):
     with connectMariaDB() as cur:
         cur.execute("SELECT * FROM telefons WHERE nom=%s", (nom,))
         return cur.fetchone() is None
-        
 
+def formatTLF(tlf):
+    reg = re.compile('[^0-9]', re.UNICODE)
+    return re.sub(reg, '', tlf)
+
+def formatNom(nom):
+    return nom.lstrip().rstrip().replace('-', '_')
