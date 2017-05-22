@@ -22,7 +22,7 @@ app.config['JSON_AS_ASCII'] = False # jsonify utf-8
 def main():
     return render_template('main.html', title = "Buscador")
 
-@app.route("/admin", methods=['GET'])
+@app.route('/admin', methods=['GET'])
 def admin():
     return render_template('main.html', title = 'Admin', admin = True)
 

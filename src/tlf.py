@@ -1,8 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify
+from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify, make_response
 from database import *
+from werkzeug.utils import secure_filename
+import csv
+import StringIO
 
 blu_tlf = Blueprint('tlf', __name__, template_folder='templates')
 
@@ -23,11 +26,11 @@ def insert():
         flash("El telèfon només pot contenir digits", "error")
         return redirect(url_for('admin'))        
 
-    if not checkRepeatTLF(tlf):
+    if checkRepeatTLF(tlf):
         flash("Aquest telèfon ja existeix", "error")
         return redirect(url_for('admin'))
                         
-    if not checkRepeatNom(nom):
+    if checkRepeatNom(nom):
         flash("Aquest nom ja existeix", "error")
         return redirect(url_for('admin'))
 
@@ -36,8 +39,45 @@ def insert():
     return redirect(url_for('admin'))
 
 @blu_tlf.route("/get", methods=['GET'])
-def getAllTLFView():
-    return jsonify(getAllTLFDict())
+def get():
+    si = StringIO.StringIO()
+    cw = csv.writer(si)
+    cw.writerows(exportContacts())
+    output = make_response(si.getvalue())
+    output.headers["Content-Disposition"] = "attachment; filename=export.csv"
+    output.headers["Content-type"] = "text/csv"
+    return output
+
+def allowed_file(filename):
+    return '.' in filename and \
+        filename.rsplit('.', 1)[1] in set(['csv'])
+
+@blu_tlf.route("/upload", methods=['POST'])
+def upload():
+     if 'file' not in request.files:
+         flash("No has pujat cap fitxer", "error")
+         return redirect(url_for('admin'))
+
+     f = request.files['file']
+
+     if not allowed_file(f.filename):
+         flash("Tipus de fitxer no valid", "error")
+         return redirect(url_for('admin'))
+
+     if f.filename == '':
+         flash("Fitxer buit", "error")
+         return redirect(url_for('admin'))
+
+     filename = secure_filename(f.filename)
+     path_w_fn = os.path.join('./uploads', filename)
+     f.save(path_w_fn)
+
+     if importContacts(path_w_fn):
+         flash("Dades importades correctament")
+         return redirect(url_for('admin'))
+     else:
+         flash("Tlf massa llarg o valors repetits", "error")
+         return redirect(url_for('admin'))
 
 @blu_tlf.route("/update", methods=['POST'])
 def update():
@@ -63,11 +103,13 @@ def update():
         return render_template('main.html', nom = old_nom, title = "Buscador", tlf = old_tlf, admin = True)
 
     if len(nou_nom) == 0:
+        # Només update de tlf
         updateTLF(old_nom, nou_tlf)
         flash("Contacte modificat")
         return render_template('main.html', nom = old_nom, title = "Buscador", tlf = nou_tlf, admin = True)
         
     if len(nou_tlf) == 0:
+        # Només update de nom
         updateNom(old_tlf, nou_nom)
         flash("Contacte modificat")
         return render_template('main.html', nom = nou_nom, title = "Buscador", tlf = old_tlf, admin = True)

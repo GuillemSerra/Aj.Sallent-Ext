@@ -39,7 +39,9 @@
 <br>
 
 {% if admin %}
+
 <div id="accordion">
+  
   {% if resultDict %}
   <h3>Modifica el contacte</h3>
   <div>
@@ -66,6 +68,18 @@
     </form>
   </div>
 </div>
+
+<br>
+
+<form action="{{ url_for('tlf.get') }}" method="get">
+  <input class="btn" type="submit" value="Exportar CSV">
+</form>
+<br>
+<form action="{{ url_for('tlf.upload') }}" method="post" enctype="multipart/form-data">
+  <input type="file" name="file">
+  <input type="submit" value="Upload">
+</form>
+
 {% endif %}
 
 <script>
