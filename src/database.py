@@ -43,17 +43,17 @@ def getAllTLFDict():
 
     return tlfDict
 
-def getAllDBLikeTLF(tlf):
-    contactList = []
+def getAllDBLike(tlf = '0000000000', nom = '0000000000'):
+    contactDict = {}
     
     with connectMariaDB() as cur:
-        cur.execute("SELECT * FROM telefons WHERE tlf LIKE %s", ('%'+tlf+'%',))
+        cur.execute("SELECT * FROM telefons WHERE tlf LIKE %s OR nom LIKE %s", ('%'+tlf+'%', '%'+nom+'%'))
         contacts = cur.fetchall()
 
         for row in contacts:
-            contactList += [{'tlf': row[1], 'nom': row[2]}]
+            contactDict[row[1]] = row[2]
 
-    return contactList
+    return contactDict
 
 def getAllDBLikeNom(nom):
     contactList = []

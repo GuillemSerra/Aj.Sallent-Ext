@@ -22,39 +22,50 @@ app.config['JSON_AS_ASCII'] = False # jsonify utf-8
 def main():
     return render_template('main.html', title = "Buscador")
 
-@app.route('/buscador', methods = ['POST'])
-def buscador():
-    busc_value_dirty = request.form["buscador"]
+@app.route("/admin", methods=['GET'])
+def admin():
+    return render_template('main.html', title = 'Admin', admin = True)
 
+@app.route('/buscador/<user>', methods = ['POST'])
+def buscador(user):
+    busc_value_dirty = request.form["buscador"]
+    
     if (len(busc_value_dirty) == 0):
         flash("Escriu telèfon o nom a buscar", "error")
-        return redirect(url_for('main'))
+        return redirect(url_for(user))
     
     busc_value_clean = busc_value_dirty.split('-')[0]
 
     if (formatTLF(busc_value_clean).isdigit()):
+        # S'ha buscat un telefon
         busc_value_clean = formatTLF(busc_value_clean)
-        
-        resultList = getAllDBLikeTLF(busc_value_clean)
-        if len(resultList) == 0:
+        db = getAllDBLike(tlf=busc_value_clean)
+        if len(db) == 0:
             flash("Aquest telèfon no existeix", "error")
-            return redirect(url_for('main'))
-        else:
-            return render_template('main.html', \
-                                   title = "Buscador", \
-                                   resultDict = resultList)
-    
+            return redirect(url_for(user))
     else:
+        # S'ha buscat un nom
         busc_value_clean = formatNom(busc_value_clean)
-
-        resultList = getAllDBLikeNom(busc_value_clean)
-        if len(resultList) == 0:
+        db = getAllDBLike(nom=busc_value_clean)
+        if len(db) == 0:
             flash("Aquest nom no existeix", "error")
-            return redirect(url_for('main'))
-        else:
-            return render_template('main.html', \
-                                   title = 'Buscador', \
-                                   resultDict = resultList)
+            return redirect(url_for(user))
+          
+    sorted_tlfs = sorted(map(int, db.keys()))
+
+    ordered_list = []
+    for tlf in map(str, sorted_tlfs):
+        ordered_list += [{'tlf': tlf, 'nom': db[tlf]}]
+
+    if user == 'main':
+        admin = False
+    else:
+        admin = True
+        
+    return render_template('main.html', \
+                           title = "Buscador", \
+                           resultDict = ordered_list, \
+                           admin = admin)
     
 @app.route("/autocomplete", methods=['GET'])
 def autocomplete():
@@ -72,45 +83,6 @@ def autocomplete():
     app.logger.debug(search)
     return jsonify(json_list = sorted_db)
 
-@app.route("/admin", methods=['GET'])
-def admin():
-    return render_template('main.html', title = 'Admin', admin = True)
-
-@app.route("/admin", methods=['POST'])
-def buscadorAdmin():
-    busc_value_dirty = request.form["buscador"]
-
-    if (len(busc_value_dirty) == 0):
-        flash("Escriu telèfon o nom a buscar", "error")
-        return redirect(url_for('main'))
-    
-    busc_value_clean = busc_value_dirty.split('-')[0]
-
-    if (formatTLF(busc_value_clean).isdigit()):
-        busc_value_clean = formatTLF(busc_value_clean)
-        
-        resultList = getAllDBLikeTLF(busc_value_clean)
-        if len(resultList) == 0:
-            flash("Aquest telèfon no existeix", "error")
-            return redirect(url_for('main'))
-        else:
-            return render_template('main.html', \
-                                   title = "Buscador", \
-                                   resultDict = resultList, \
-                                   admin = True)
-    
-    else:
-        busc_value_clean = formatNom(busc_value_clean)
-
-        resultList = getAllDBLikeNom(busc_value_clean)
-        if len(resultList) == 0:
-            flash("Aquest nom no existeix", "error")
-            return redirect(url_for('main'))
-        else:
-            return render_template('main.html', \
-                                   title = "Buscador", \
-                                   resultDict = resultList, \
-                                   admin = True)
 
 if __name__ == "__main__":
     app.debug = 1

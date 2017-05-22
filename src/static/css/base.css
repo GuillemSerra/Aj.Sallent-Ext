@@ -30,6 +30,18 @@ footer {
     margin: 0 auto;
 }
 
+p {
+    margin: 0.5em;
+}
+
+.alignleft {
+    float: left;
+}
+
+.alignright {
+    float: right;
+}
+
 h1 {
     font-size: 32px;
 }

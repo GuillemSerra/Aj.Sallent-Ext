@@ -3,13 +3,13 @@
 {% block body %}
 
 {% if admin %}
-<form action="{{ url_for('buscadorAdmin') }}" method="post" accept-charset="utf-8">
+<form action="{{ url_for('buscador', user='admin') }}" method="post" accept-charset="utf-8">
   <input id="buscador" name="buscador" placeholder="Busca telèfon o nom"></input>
   <br>
   <input class="btn" type="submit" value="Buscar">
 </form>
 {% else %}
-<form action="{{ url_for('buscador') }}" method="post" accept-charset="utf-8">
+<form action="{{ url_for('buscador', user='main') }}" method="post" accept-charset="utf-8">
   <input id="buscador" name="buscador" placeholder="Busca telèfon o nom"></input>
   <br>
   <input class="btn" type="submit" value="Buscar">
@@ -19,23 +19,24 @@
 <br>
 
 {% if resultDict %}
-<ul>
-  {% for contacte in resultDict %}
-  <li><b>Telèfon</b>: {{ contacte.tlf }}</li>
-  <li><b>Nom</b>: {{ contacte.nom }}</li>
+{% for contacte in resultDict %}
+<p class="alignleft"> <b>Telèfon</b>: {{ contacte.tlf }} </p>
+<p class="alignright"> <b>Nom</b>: {{ contacte.nom }} </p>
+<div style="clear: both;"></div>
 
-  {% if admin %}
-  <form action="{{ url_for('tlf.delete') }}" method="post" accept-charset="utf-8" onsubmit="return confirm('Segur que voleu eliminar aquest contacte?');">
-    <input type="hidden" name="delete_tlf" value="{{ contacte.tlf }}">
-    <input type="hidden" name="delete_nom" value="{{ contacte.nom }}">
-    <input class="btn" type="submit" value="Esborrar contacte" style="color: white; background: #990000">
-  </form>
-  <br>
-  {% endif %}
-  
-  {% endfor%}
-</ul>
+{% if admin %}
+<form action="{{ url_for('tlf.delete') }}" method="post" accept-charset="utf-8" onsubmit="return confirm('Segur que voleu eliminar aquest contacte?');">
+  <input type="hidden" name="delete_tlf" value="{{ contacte.tlf }}">
+  <input type="hidden" name="delete_nom" value="{{ contacte.nom }}">
+  <input class="btn" type="submit" value="Esborrar contacte" style="color: white; background: #990000">
+</form>
+<br>
 {% endif %}
+
+{% endfor%}
+{% endif %}
+
+<br>
 
 {% if admin %}
 <div id="accordion">
@@ -68,24 +69,24 @@
 {% endif %}
 
 <script>
-$(document).ready(function() {
-        $.ajax({
-        url: '{{ url_for("autocomplete") }}'
-    }).done(function (data) {
-        $('#buscador').autocomplete({
-            source: data.json_list,
-            minLength: 2
-        });
-    });
-});
+  $(document).ready(function() {
+  $.ajax({
+  url: '{{ url_for("autocomplete") }}'
+  }).done(function (data) {
+  $('#buscador').autocomplete({
+  source: data.json_list,
+  minLength: 2
+  });
+  });
+  });
 </script>
 
 <script>
   $( function() {
-    $( "#accordion" ).accordion({
+  $( "#accordion" ).accordion({
   collapsible: true,
   active: 0
-    });
+  });
   } );
 </script>
 {% endblock %}

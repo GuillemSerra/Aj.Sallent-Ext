@@ -3,7 +3,7 @@ services:
   flask:
     build: .
     ports:
-     - "8080:80"
+     - "80:80"
     volumes:
      - ./src:/app
     links:
