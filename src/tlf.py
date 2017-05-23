@@ -84,48 +84,55 @@ def update():
     nou_tlf = request.form['nou_tlf']
     nou_nom = request.form['nou_nom']
     old_tlf = request.form['old_tlf']
-    old_nom = request.form['old_nom']
 
+    if len(old_tlf) == 0:
+        flash("Escriu quin telèfon vols modificar", "error")
+        return redirect(url_for('admin'))
+
+    if not checkRepeatTLF(old_tlf):
+        flash("El telèfon a modificar no existeix", "error")
+        return redirect(url_for('admin'))
+    
     if not nou_tlf.isdigit():
         flash("El telèfon només pot contenir digits", "error")
-        return render_template('main.html', nom = old_nom, title = "Buscador", tlf = old_tlf, admin = True)
+        return redirect(url_for('admin'))
     
-    if not checkRepeatTLF(nou_tlf):
+    if checkRepeatTLF(nou_tlf):
         flash("Aquest telèfon ja existeix", "error")
-        return render_template('main.html', nom = old_nom, title = "Buscador", tlf = old_tlf, admin = True)
+        return redirect(url_for('admin'))
                         
-    if not checkRepeatNom(nou_nom):
+    if checkRepeatNom(nou_nom):
         flash("Aquest nom ja existeix", "error")
-        return render_template('main.html', nom = old_nom, title = "Buscador", tlf = old_tlf, admin = True)
+        return redirect(url_for('admin'))
 
     if (len(nou_nom) == 0) and (len(nou_tlf) == 0):
         flash("No has escrit res per modificar", "error")
-        return render_template('main.html', nom = old_nom, title = "Buscador", tlf = old_tlf, admin = True)
+        return redirect(url_for('admin'))
 
     if len(nou_nom) == 0:
         # Només update de tlf
-        updateTLF(old_nom, nou_tlf)
+        updateTLF(old_tlf, nou_tlf)
         flash("Contacte modificat")
-        return render_template('main.html', nom = old_nom, title = "Buscador", tlf = nou_tlf, admin = True)
+        return redirect(url_for('admin'))
         
     if len(nou_tlf) == 0:
         # Només update de nom
         updateNom(old_tlf, nou_nom)
         flash("Contacte modificat")
-        return render_template('main.html', nom = nou_nom, title = "Buscador", tlf = old_tlf, admin = True)
+        return redirect(url_for('admin'))
 
     updateNom(old_tlf, nou_nom)
-    updateTLF(old_nom, nou_tlf)
+    updateTLF(old_tlf, nou_tlf)
     flash("Contacte modificat")
-    return render_template('main.html', nom = nou_nom, title = "Buscador", tlf = nou_tlf, admin = True)
+    return redirect(url_for('admin'))
 
 @blu_tlf.route("/delete", methods=['POST'])
 def delete():
     delete_tlf = request.form['delete_tlf']
-    delete_nom = request.form['delete_nom']
-    
-    deleteTLF(formatTLF(delete_tlf))
 
-    flash("El contacte de: %s s'ha eliminat" % (delete_nom, ))
-    return redirect(url_for('admin'))
+    if checkRepeatTLF(delete_tlf):
+        deleteTLF(delete_tlf)
+        return "El contacte amb numero %s s'ha eliminat" % (delete_tlf,)
+    else:
+        return "El contacte %s ja esta eliminar o error" % (delete_tlf,)
 

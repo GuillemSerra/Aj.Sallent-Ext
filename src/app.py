@@ -20,11 +20,31 @@ app.config['JSON_AS_ASCII'] = False # jsonify utf-8
 
 @app.route('/', methods = ["GET"])
 def main():
-    return render_template('main.html', title = "Buscador")
+    db = getAllTLFDict()
+    sorted_tlfs = sorted(map(int, db.keys()))
+    
+    ordered_list = []
+    for tlf in map(str, sorted_tlfs):
+        ordered_list += [{'tlf': tlf, 'nom': db[tlf]}]
+        
+    return render_template('main.html', \
+                           title = "Buscador", \
+                           resultDict = ordered_list, \
+                           admin = False)
 
 @app.route('/admin', methods=['GET'])
 def admin():
-    return render_template('main.html', title = 'Admin', admin = True)
+    db = getAllTLFDict()
+    sorted_tlfs = sorted(map(int, db.keys()))
+    
+    ordered_list = []
+    for tlf in map(str, sorted_tlfs):
+        ordered_list += [{'tlf': tlf, 'nom': db[tlf]}]
+        
+    return render_template('main.html', \
+                           title = "Buscador", \
+                           resultDict = ordered_list, \
+                           admin = True)
 
 @app.route('/buscador/<user>', methods = ['POST'])
 def buscador(user):
@@ -85,7 +105,7 @@ def autocomplete():
 
 
 if __name__ == "__main__":
-    app.debug = 1
+    app.debug = 0
     app.run('0.0.0.0', port=80, threaded=True)
 
 

@@ -19,40 +19,39 @@
 <br>
 
 {% if resultDict %}
-{% for contacte in resultDict %}
-<p class="alignleft"> <b>Telèfon</b>: {{ contacte.tlf }} </p>
-<p class="alignright"> <b>Nom</b>: {{ contacte.nom }} </p>
-<div style="clear: both;"></div>
-
-{% if admin %}
-<form action="{{ url_for('tlf.delete') }}" method="post" accept-charset="utf-8" onsubmit="return confirm('Segur que voleu eliminar aquest contacte?');">
-  <input type="hidden" name="delete_tlf" value="{{ contacte.tlf }}">
-  <input type="hidden" name="delete_nom" value="{{ contacte.nom }}">
-  <input class="btn" type="submit" value="Esborrar contacte" style="color: white; background: #990000">
-</form>
-<br>
+<table style="width:100%">
+  <tr>
+    <th>Telèfon</th>
+    <th>Nom</th>
+    {% if admin %}<th>Delete</th>{% endif %}
+  </tr>
+  {% for contacte in resultDict %}
+  <tr>
+    <td>{{ contacte.tlf }}</td>
+    <td>{{ contacte.nom }}</td>
+    {% if admin %}
+    <td>
+      <input class="btn" type="submit" id="btn-{{ contacte.tlf }}" value="ESBORRAR" style="color: white; background: #990000; font-weight: bold;" onclick="submitForm('{{ contacte.tlf }}', '{{ contacte.nom }}')">
+    </td>
+    {% endif %}
+  </tr>
+  {% endfor %}
+</table>
 {% endif %}
 
-{% endfor%}
-{% endif %}
-
 <br>
 
 {% if admin %}
-
 <div id="accordion">
   
   {% if resultDict %}
   <h3>Modifica el contacte</h3>
   <div>
     <form action="{{ url_for('tlf.update') }}" method="post" accept-charset="utf-8">
+      <input name="old_tlf" placeholder="Telèfon del contacte a modificar"</input>
       <input name="nou_tlf" placeholder="Nou telèfon"></input>
       <input name="nou_nom" placeholder="Nou nom"></input>
-      <input type="hidden" name="old_nom" value="{{ nom }}">
-      <input type="hidden" name="old_tlf" value="{{ tlf }}">
-      <br>
-      <br>
-      <input class="btn" type="submit" value="Modificar">
+      <input class="btn" type="submit" value="Modificar" onclick="console.log('lalo')">
     </form>
   </div>
   {% endif %}
@@ -62,14 +61,10 @@
     <form action="{{ url_for('tlf.insert') }}" method="post" accept-charset="utf-8">
       <input type="text" placeholder="Telèfon (màx. 9 caràcters)" name="tlf"><br>
       <input type="text" placeholder="Nom" name="nom">
-      <br>
-      <br>
       <input class="btn" type="submit" value="Afegir">
     </form>
   </div>
 </div>
-
-<br>
 
 <form action="{{ url_for('tlf.get') }}" method="get">
   <input class="btn" type="submit" value="Exportar CSV">
@@ -77,30 +72,60 @@
 <br>
 <form action="{{ url_for('tlf.upload') }}" method="post" enctype="multipart/form-data">
   <input type="file" name="file">
-  <input type="submit" value="Upload">
+  <input class="btn" type="submit" value="Upload">
 </form>
-
 {% endif %}
 
 <script>
-  $(document).ready(function() {
-  $.ajax({
-  url: '{{ url_for("autocomplete") }}'
-  }).done(function (data) {
-  $('#buscador').autocomplete({
-  source: data.json_list,
-  minLength: 2
-  });
-  });
-  });
+  function submitForm(tlf, nom)
+  {
+    var http = new XMLHttpRequest();
+    var btn = document.getElementById('btn-'+tlf);
+    
+    if (btn.value == "ESBORRAR")
+    {
+	http.open("POST", "{{ url_for('tlf.delete') }}", true);
+	http.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+	var params = "delete_tlf=" + tlf;
+	http.send(params);
+	
+	http.onload = function()
+	{
+	    btn.style.background = "#008b8b";
+	    btn.value = "DESFER";
+	}
+    }
+    else if (btn.value == "DESFER")
+    {
+	http.open("POST", "{{ url_for('tlf.insert') }}", true);
+	http.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+	var params = "tlf=" + tlf + "&" + "nom=" + nom;
+	http.send(params);
+	http.onload = function()
+	{
+	    btn.style.background = "#990000";
+	    btn.value = "ESBORRAR";
+	}
+    }	
+}
+
+$( function() {
+    $( "#accordion" ).accordion({
+	collapsible: true,
+	active: 0
+    });
+} );
+
+$(document).ready(function() {
+    $.ajax({
+	url: '{{ url_for("autocomplete") }}'
+    }).done(function (data) {
+	$('#buscador').autocomplete({
+	    source: data.json_list,
+	    minLength: 2
+	});
+    });
+});
 </script>
 
-<script>
-  $( function() {
-  $( "#accordion" ).accordion({
-  collapsible: true,
-  active: 0
-  });
-  } );
-</script>
 {% endblock %}

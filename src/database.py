@@ -66,9 +66,9 @@ def updateNom(tlf, nou_nom):
     with connectMariaDB() as cur:
         cur.execute("UPDATE telefons SET nom=%s WHERE tlf=%s", (nou_nom, tlf))
         
-def updateTLF(nom, nou_tlf):
+def updateTLF(tlf, nou_tlf):
     with connectMariaDB() as cur:
-        cur.execute("UPDATE telefons SET tlf=%s WHERE nom=%s", (nou_tlf, nom))
+        cur.execute("UPDATE telefons SET tlf=%s WHERE tlf=%s", (nou_tlf, tlf))
     
 def checkRepeatTLF(tlf):
     with connectMariaDB() as cur:
@@ -109,7 +109,7 @@ def importContacts(filename):
                 continue
                 
             tlf = formatTLF(row.split(',')[0])
-            if checkRepeatTLF(tlf) or len(tlf) > 9:
+            if checkRepeatTLF(tlf) or len(tlf) > 9 or tlf == '':
                 return False
             
             nom = formatNom(row.split(',')[1])
