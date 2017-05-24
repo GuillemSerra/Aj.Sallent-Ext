@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify, make_response
 from database import *
 from werkzeug.utils import secure_filename
 import csv
 import StringIO
+import os
 
 blu_tlf = Blueprint('tlf', __name__, template_folder='templates')
 
@@ -73,10 +73,12 @@ def upload():
      f.save(path_w_fn)
 
      if importContacts(path_w_fn):
-         flash("Dades importades correctament")
+         flash("Dades importades correctament)")
+         os.remove(path_w_fn)
          return redirect(url_for('admin'))
      else:
-         flash("Tlf massa llarg o valors repetits", "error")
+         flash("TLF massa llarg o valors repetits", "error")
+         os.remove(path_w_fn)
          return redirect(url_for('admin'))
 
 @blu_tlf.route("/update", methods=['POST'])

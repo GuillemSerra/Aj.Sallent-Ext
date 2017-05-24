@@ -5,9 +5,10 @@ from flask import Flask, render_template, jsonify, request, redirect, url_for, f
 from tlf import blu_tlf
 from database import *
 import PyICU
-
 import os
+import subprocess
 import sys
+
 reload(sys)
 sys.setdefaultencoding('utf8')
 
@@ -102,7 +103,6 @@ def autocomplete():
     
     app.logger.debug(search)
     return jsonify(json_list = sorted_db)
-
 
 if __name__ == "__main__":
     app.debug = 0
