@@ -31,7 +31,12 @@
     <td>{{ contacte.nom }}</td>
     {% if admin %}
     <td>
-      <input class="btn" type="submit" id="btn-{{ contacte.tlf }}" value="ESBORRAR" style="color: white; background: #990000; font-weight: bold;" onclick="submitForm('{{ contacte.tlf }}', '{{ contacte.nom }}')">
+      <input class="btn" type="submit" id="btn-{{ contacte.tlf }}"
+	     data-tlf="{{ contacte.tlf }}"
+	     data-nom="{{ contacte.nom }}"
+	     value="ESBORRAR"
+	     style="color: white; background: #990000; font-weight: bold;"
+	     onclick="submitForm('{{ contacte.tlf }}')">
     </td>
     {% endif %}
   </tr>
@@ -51,7 +56,8 @@
       <input name="old_tlf" placeholder="Telèfon del contacte a modificar"</input>
       <input name="nou_tlf" placeholder="Nou telèfon"></input>
       <input name="nou_nom" placeholder="Nou nom"></input>
-      <input class="btn" type="submit" value="Modificar" onclick="console.log('lalo')">
+      <br>
+      <input class="btn" type="submit" value="Modificar">
     </form>
   </div>
   {% endif %}
@@ -59,12 +65,15 @@
   <h3>Afegeix un nou contacte</h3>
   <div>
     <form action="{{ url_for('tlf.insert') }}" method="post" accept-charset="utf-8">
-      <input type="text" placeholder="Telèfon (màx. 9 caràcters)" name="tlf"><br>
-      <input type="text" placeholder="Nom" name="nom">
+      <input type="text" placeholder="Telèfon (màx. 9 caràcters)" name="tlf"></input>
+      <input type="text" placeholder="Nom" name="nom"></input>
+      <br><br>
       <input class="btn" type="submit" value="Afegir">
     </form>
   </div>
 </div>
+
+<br>
 
 <form action="{{ url_for('tlf.get') }}" method="get">
   <input class="btn" type="submit" value="Exportar CSV">
@@ -77,10 +86,11 @@
 {% endif %}
 
 <script>
-  function submitForm(tlf, nom)
+  function submitForm(tlf)
   {
     var http = new XMLHttpRequest();
     var btn = document.getElementById('btn-'+tlf);
+    var nom = btn.getAttribute("data-nom");
     
     if (btn.value == "ESBORRAR")
     {

@@ -129,7 +129,7 @@ def update():
 @blu_tlf.route("/delete", methods=['POST'])
 def delete():
     delete_tlf = request.form['delete_tlf']
-
+    
     if checkRepeatTLF(delete_tlf):
         deleteTLF(delete_tlf)
         return "El contacte amb numero %s s'ha eliminat" % (delete_tlf,)
