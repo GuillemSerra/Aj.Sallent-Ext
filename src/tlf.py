@@ -73,7 +73,7 @@ def upload():
      f.save(path_w_fn)
 
      if importContacts(path_w_fn):
-         flash("Dades importades correctament)")
+         flash("Dades importades correctament")
          os.remove(path_w_fn)
          return redirect(url_for('admin'))
      else:

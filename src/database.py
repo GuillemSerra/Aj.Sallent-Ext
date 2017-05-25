@@ -84,7 +84,7 @@ def formatTLF(tlf):
     return re.sub(reg, '', tlf)
 
 def formatNom(nom):
-    return nom.lstrip().rstrip().replace('-', '_')
+    return nom.lstrip().rstrip().replace('-', '_').replace('\r', '')
 
 def exportContacts():
     allDBCSV = []
@@ -99,23 +99,22 @@ def exportContacts():
     return allDBCSV
 
 def importContacts(filename):
+    contactes = False
     with open(filename, 'r') as f:
-        rows = f.read().split('\r\n')
-
+        rows = f.read().split('\n')
+        print rows
         for row in rows:
-            print row
             if row == '':
                 continue
                 
             tlf = formatTLF(row.split(',')[0])
-            if checkRepeatTLF(tlf) or len(tlf) > 9 or tlf == '':
-                return False
-            
             nom = formatNom(row.split(',')[1])
-            if checkRepeatNom(nom):
-                return False
             
-            insertTLF(tlf, nom)
+            if checkRepeatTLF(tlf) or len(tlf) > 9 or tlf == '' or checkRepeatNom(nom):
+                continue
+            else:
+                contactes = True
+                insertTLF(tlf, nom)
 
     return True
             
