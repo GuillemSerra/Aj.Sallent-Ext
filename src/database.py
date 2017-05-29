@@ -13,9 +13,9 @@ DB_NAME = os.environ["DB_NAME"]
 def connectMariaDB():
     return mariadb.connect(host=DB_HOST, user=DB_USER, passwd=DB_PASSWD, db=DB_NAME, charset = "utf8")
 
-def insertTLF(tlf, nom):
+def insertTLF(tlf, nom, dept='', tlf_dir='', email='', area=''):
     with connectMariaDB() as cur:
-        cur.execute("INSERT INTO telefons VALUES(id, %s, %s)", (tlf, nom))
+        cur.execute("INSERT INTO telefons VALUES(id, %s, %s, %s, %s, %s, %s)", (tlf, nom, dept, tlf_dir, email, area))
 
 def deleteTLF(tlf):
     with connectMariaDB() as cur:
@@ -27,7 +27,7 @@ def getAllTLFDict():
     with connectMariaDB() as cur:
         cur.execute("SELECT * FROM telefons")
         for row in cur.fetchall():
-            tlfDict[row[1]] = row[2]
+            tlfDict[row[1]] = [row[2], row[3], row[4], row[5], row[6]]
 
     return tlfDict
 
@@ -39,18 +39,19 @@ def getAllDBLike(tlf = '0000000000', nom = '0000000000'):
         contacts = cur.fetchall()
 
         for row in contacts:
-            contactDict[row[1]] = row[2]
+            contactDict[row[1]] = [row[2], row[3], row[4], row[5], row[6]]
 
     return contactDict
 
-def getNom(tlf):
+def getContacte(nom):
     with connectMariaDB() as cur:
-        cur.execute("SELECT nom FROM telefons where tlf=%s", (tlf,))
+        cur.execute("SELECT * FROM telefons where nom=%s", (nom,))
         row = cur.fetchone()
+        
     if row is None:
         return None
     else:
-        return row[0]
+        return row[1:]
            
 def getTLF(nom):
     with connectMariaDB() as cur:
@@ -84,7 +85,7 @@ def formatTLF(tlf):
     return re.sub(reg, '', tlf)
 
 def formatNom(nom):
-    return nom.lstrip().rstrip().replace('-', '_').replace('\r', '')
+    return nom.lstrip().rstrip().replace('-', '_').replace('\r', '').replace('/', '_')
 
 def exportContacts():
     allDBCSV = []
@@ -94,7 +95,7 @@ def exportContacts():
         rows = cur.fetchall()
 
     for row in rows:
-        allDBCSV += [[row[1], row[2]]]
+        allDBCSV += [[row[1], row[2], row[3], row[4], row[5], row[6]]]
 
     return allDBCSV
 
@@ -102,19 +103,25 @@ def importContacts(filename):
     contactes = False
     with open(filename, 'r') as f:
         rows = f.read().split('\n')
-        print rows
+
         for row in rows:
             if row == '':
                 continue
-                
-            tlf = formatTLF(row.split(',')[0])
-            nom = formatNom(row.split(',')[1])
+
+            camps = row.split(',')
+            
+            tlf = formatTLF(camps[0])
+            nom = formatNom(camps[1])
+            dept = formatNom(camps[2])
+            tlf_dir = formatTLF(camps[3])
+            email = formatNom(camps[4])
+            area = formatNom(camps[5])
             
             if checkRepeatTLF(tlf) or len(tlf) > 9 or tlf == '' or checkRepeatNom(nom):
                 continue
             else:
                 contactes = True
-                insertTLF(tlf, nom)
+                insertTLF(tlf, nom, dept, tlf_dir, email, area)
 
     return True
             

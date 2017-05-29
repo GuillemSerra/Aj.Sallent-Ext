@@ -138,3 +138,14 @@ def delete():
     else:
         return "El contacte %s ja esta eliminar o error" % (delete_tlf,)
 
+@blu_tlf.route("/contacte/<user>", methods=['GET'])
+def contacte(user):
+    contacte = getContacte(user)
+    return render_template('contacte.html', title='Buscador', \
+                           tlf=contacte[0], nom=contacte[1], \
+                           dept=contacte[2], tlf_dir=contacte[3], \
+                           email=contacte[4], area=contacte[5])
+
+@blu_tlf.route("/dept/<dept>", methods=['GET'])
+def dept(dept):
+    return dept

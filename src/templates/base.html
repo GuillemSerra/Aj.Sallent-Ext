@@ -43,8 +43,25 @@
 
     <main>
       <div class="container">
-        {% block body %}
+	
+	{% if admin %}
+	<form action="{{ url_for('buscador', user='admin') }}" method="post" accept-charset="utf-8">
+	  <input id="buscador" name="buscador" placeholder="Busca telèfon o nom">
+	  <br>
+	  <input class="btn" type="submit" value="Buscar">
+	</form>
+	{% else %}
+	<form action="{{ url_for('buscador', user='main') }}" method="post" accept-charset="utf-8">
+	  <input id="buscador" name="buscador" placeholder="Busca telèfon o nom">
+	  <br>
+	  <input class="btn" type="submit" value="Buscar">
+	</form>
+	{% endif %}
+	<br>
+	
+        {% block body %}	
         {% endblock %}
+	
       </div>
     </main>
 
@@ -52,4 +69,55 @@
     developed by Departament TIC
     </footer>
   </body>
+  <script>
+  function submitForm(tlf)
+  {
+    var http = new XMLHttpRequest();
+    var btn = document.getElementById('btn-'+tlf);
+    var nom = btn.getAttribute("data-nom");
+    
+    if (btn.value == "ESBORRAR")
+    {
+	http.open("POST", "{{ url_for('tlf.delete') }}", true);
+	http.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+	var params = "delete_tlf=" + tlf;
+	http.send(params);
+	
+	http.onload = function()
+	{
+	    btn.style.background = "#008b8b";
+	    btn.value = "DESFER";
+	}
+    }
+    else if (btn.value == "DESFER")
+    {
+	http.open("POST", "{{ url_for('tlf.insert') }}", true);
+	http.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+	var params = "tlf=" + tlf + "&" + "nom=" + nom;
+	http.send(params);
+	http.onload = function()
+	{
+	    btn.style.background = "#990000";
+	    btn.value = "ESBORRAR";
+	}
+    }	
+}
+
+$( function() {
+    $( "#accordion" ).accordion({
+	collapsible: true,
+	active: 0
+    });
+} );
+  $(document).ready(function() {
+    $.ajax({
+	url: '{{ url_for("autocomplete") }}'
+    }).done(function (data) {
+	$('#buscador').autocomplete({
+	    source: data.json_list,
+	    minLength: 2
+	});
+    });
+});
+  </script>
 </html>

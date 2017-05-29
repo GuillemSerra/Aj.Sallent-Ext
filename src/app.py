@@ -26,7 +26,9 @@ def main():
     
     ordered_list = []
     for tlf in map(str, sorted_tlfs):
-        ordered_list += [{'tlf': tlf, 'nom': db[tlf]}]
+        ordered_list += [{'tlf': tlf, 'nom': db[tlf][0], \
+                          'dept': db[tlf][1], 'tlf_dir': db[tlf][2], \
+                          'email': db[tlf][3]}]
         
     return render_template('main.html', \
                            title = "Buscador", \
@@ -40,8 +42,10 @@ def admin():
     
     ordered_list = []
     for tlf in map(str, sorted_tlfs):
-        ordered_list += [{'tlf': tlf, 'nom': db[tlf]}]
-        
+        ordered_list += [{'tlf': tlf, 'nom': db[tlf][0], \
+                          'dept': db[tlf][1], 'tlf_dir': db[tlf][2], \
+                          'email': db[tlf][3]}]
+                
     return render_template('main.html', \
                            title = "Buscador", \
                            resultDict = ordered_list, \
@@ -76,17 +80,24 @@ def buscador(user):
 
     ordered_list = []
     for tlf in map(str, sorted_tlfs):
-        ordered_list += [{'tlf': tlf, 'nom': db[tlf]}]
+        ordered_list += [{'tlf': tlf, 'nom': db[tlf][0], \
+                          'dept': db[tlf][1], 'tlf_dir': db[tlf][2], \
+                          'email': db[tlf][3]}]
 
     if user == 'main':
         admin = False
     else:
         admin = True
-        
-    return render_template('main.html', \
-                           title = "Buscador", \
-                           resultDict = ordered_list, \
-                           admin = admin)
+
+    # Si nomes hi ha un resultat, mostrem informació completa
+    if len(ordered_list) == 1:
+        contacte = ordered_list[0]
+        return url_for('tlf.contacte', user=contacte['nom'])
+    else:
+        return render_template('main.html', \
+                               title = "Buscador", \
+                               resultDict = ordered_list, \
+                               admin = admin)
     
 @app.route("/autocomplete", methods=['GET'])
 def autocomplete():
@@ -99,13 +110,13 @@ def autocomplete():
     
     sorted_db = []
     for tlf in map(str, sorted_tlfs):
-        sorted_db += [tlf + ' - ' + db[tlf]]
+        sorted_db += [tlf + ' - ' + db[tlf][0]]
     
     app.logger.debug(search)
     return jsonify(json_list = sorted_db)
 
 if __name__ == "__main__":
-    app.debug = 0
+    app.debug = 1
     app.run('0.0.0.0', port=80, threaded=True)
 
 
