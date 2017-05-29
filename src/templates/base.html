@@ -61,7 +61,7 @@
 	  <form {% if admin %}
 		action="{{ url_for('buscador.dept', user='admin') }}" \
 		{% else %}
-		action="{{ url_for('buscador.dept', user='user') }}" \
+		action="{{ url_for('buscador.dept', user='main') }}" \
 		{% endif %}
 		method="post" accept-charset="utf-8">
 	    <input id="buscador_dept" name="buscador_dept" placeholder="Busca departament">
