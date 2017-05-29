@@ -44,15 +44,13 @@
     <main>
       <div class="container">
 	
-	{% if admin %}
-	<form action="{{ url_for('buscador.tlf', user='admin') }}" method="post" accept-charset="utf-8">
-	  <input id="buscador" name="buscador" placeholder="Busca telèfon o nom">
-	  <br>
-	  <input class="btn" type="submit" value="Buscar">
-	</form>
-	{% else %}
 	<div id="left">
-	  <form action="{{ url_for('buscador.tlf', user='main') }}" method="post" accept-charset="utf-8">
+	  <form {% if admin %} \
+		action="{{ url_for('buscador.tlf', user='admin') }}" \
+		{% else %}
+		action="{{ url_for('buscador.tlf', user='main') }}" \
+		{% endif %}
+		method="post" accept-charset="utf-8">
 	    <input id="buscador_tlf" name="buscador_tlf" placeholder="Busca telèfon o nom">
 	    <br>
 	    <input class="btn" type="submit" value="Buscar">
@@ -60,18 +58,48 @@
 	</div>
 	
 	<div id="right">
-	  <form action="{{ url_for('buscador.dept', user='main') }}" method="post" accept-charset="utf-8">
+	  <form {% if admin %}
+		action="{{ url_for('buscador.dept', user='admin') }}" \
+		{% else %}
+		action="{{ url_for('buscador.dept', user='user') }}" \
+		{% endif %}
+		method="post" accept-charset="utf-8">
 	    <input id="buscador_dept" name="buscador_dept" placeholder="Busca departament">
 	    <br>
 	    <input class="btn" type="submit" value="Buscar">
 	  </form>
 	</div>
+	
+	<br><div style="clear:both"></div>
+
+	{% if admin %}
+	<div id="accordion">  
+	  <h3>Afegeix un nou contacte</h3>
+	  <div>
+	    <form action="{{ url_for('tlf.insert') }}" method="post" accept-charset="utf-8">
+	      <input type="text" placeholder="Telèfon (màx. 9 caràcters)(obligatori)" name="tlf">
+	      <input type="text" placeholder="Nom (obligatori)" name="nom">
+	      <input id="buscador_dept_nou" type="text" placeholder="Departament (opcional)" name="dept">
+	      <input type="text" placeholder="Telèfon directe (opcional)" name="tlf_dir">
+	      <input type="text" placeholder="Email (opcional)" name="email">
+	      <input type="text" placeholder="Àrea (opcional)" name="area">
+	      <br><br>
+	      <input class="btn" type="submit" value="Afegir">
+	    </form>
+	  </div>
+	</div>
+	<br>
 	{% endif %}
 	
         {% block body %}	
         {% endblock %}
+	
 	<br>
+	{% if admin %}
+	<a href="{{ url_for('admin') }}">Torna a l'inici</a>
+	{% else %}
 	<a href="{{ url_for('main') }}">Torna a l'inici</a>
+	{% endif %}
 
       </div>
     </main>
@@ -86,7 +114,11 @@
     var http = new XMLHttpRequest();
     var btn = document.getElementById('btn-'+tlf);
     var nom = btn.getAttribute("data-nom");
-    
+    var dept = btn.getAttribute("data-dept");
+    var email = btn.getAttribute("data-email");
+    var tlf_dir = btn.getAttribute("data-tlf_dir");
+    var area = btn.getAttribute("data-area");
+
     if (btn.value == "ESBORRAR")
     {
 	http.open("POST", "{{ url_for('tlf.delete') }}", true);
@@ -104,7 +136,7 @@
     {
 	http.open("POST", "{{ url_for('tlf.insert') }}", true);
 	http.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-	var params = "tlf=" + tlf + "&" + "nom=" + nom;
+	var params = "tlf=" + tlf + "&" + "nom=" + nom + "&" + "dept=" + dept + "&" + "tlf_dir=" + tlf_dir + "&" + "email=" + email + "&" + "area=" + area;
 	http.send(params);
 	http.onload = function()
 	{
@@ -117,7 +149,7 @@
 $( function() {
     $( "#accordion" ).accordion({
 	collapsible: true,
-	active: 0
+	active: false
     });
 } );
 
@@ -140,7 +172,15 @@ $(document).ready(function() {
 	    source: data.json_list,
 	    minLength: 1
 	});
+	$('#buscador_dept_nou').autocomplete({
+	    source: data.json_list,
+	    minLength: 1
+	});
+	$('#buscador_dept_mod').autocomplete({
+	    source: data.json_list,
+	    minLength: 1
+	});
     });
-});
+ });
   </script>
 </html>

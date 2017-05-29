@@ -12,7 +12,7 @@ def test(man):
     
 @blu_busc.route('/tlf/<user>', methods = ['POST'])
 def tlf(user):
-    busc_value_dirty = request.form["buscador"]
+    busc_value_dirty = request.form["buscador_tlf"]
     
     if (len(busc_value_dirty) == 0):
         flash("Escriu telèfon o nom a buscar", "error")
@@ -41,7 +41,7 @@ def tlf(user):
     for tlf in map(str, sorted_tlfs):
         ordered_list += [{'tlf': tlf, 'nom': db[tlf][0], \
                           'dept': db[tlf][1], 'tlf_dir': db[tlf][2], \
-                          'email': db[tlf][3]}]
+                          'email': db[tlf][3], 'area': db[tlf][4]}]
 
     if user == 'main':
         admin = False
@@ -51,7 +51,7 @@ def tlf(user):
     # Si nomes hi ha un resultat, contacte.html
     if len(ordered_list) == 1:
         contacte = ordered_list[0]
-        return redirect(url_for('tlf.contacte', user=contacte['nom']))
+        return redirect(url_for('tlf.contacte', contacte=contacte['nom'], user=user))
     else:
         return render_template('main.html', \
                                title = "Buscador", \
@@ -60,14 +60,14 @@ def tlf(user):
 
 @blu_busc.route('/dept/<user>', methods = ['POST'])
 def dept(user):
-    busc_value = request.form["buscador"]
+    busc_value = request.form["buscador_dept"]
     
     if (len(busc_value) == 0):
         flash("Escriu departament a buscar", "error")
         return redirect(url_for(user))
 
     busc_value_clean = formatNom(busc_value)
-    db = getAllDBLike(dept=busc_value_clean)
+    db = getDepartamentDict(busc_value_clean)
     if len(db) == 0:
         flash("Aquest departament no existeix", "error")
         return redirect(url_for(user))
@@ -75,10 +75,13 @@ def dept(user):
     sorted_tlfs = sorted(map(int, db.keys()))
 
     ordered_list = []
+    depts = []
     for tlf in map(str, sorted_tlfs):
+        if db[tlf][1] not in depts:
+            depts += [db[tlf][1]]
         ordered_list += [{'tlf': tlf, 'nom': db[tlf][0], \
                           'dept': db[tlf][1], 'tlf_dir': db[tlf][2], \
-                          'email': db[tlf][3]}]
+                          'email': db[tlf][3], 'area': db[tlf][4]}]
 
     if user == 'main':
         admin = False
@@ -86,9 +89,9 @@ def dept(user):
         admin = True
 
     # Si nomes hi ha un departament, departament.html
-    if len(ordered_list) == 1:
+    if len(depts) == 1:
         contacte = ordered_list[0]
-        return redirect(url_for('tlf.departament', dept=contacte['dept']))
+        return redirect(url_for('tlf.dept', dept=contacte['dept'], user=user))
     else:
         return render_template('main.html', \
                                title = "Buscador", \

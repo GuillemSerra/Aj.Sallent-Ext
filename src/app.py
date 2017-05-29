@@ -27,7 +27,7 @@ def main():
     for tlf in map(str, sorted_tlfs):
         ordered_list += [{'tlf': tlf, 'nom': db[tlf][0], \
                           'dept': db[tlf][1], 'tlf_dir': db[tlf][2], \
-                          'email': db[tlf][3]}]
+                          'email': db[tlf][3], 'area': db[tlf][4]}]
         
     return render_template('main.html', \
                            title = "Buscador", \
@@ -43,7 +43,7 @@ def admin():
     for tlf in map(str, sorted_tlfs):
         ordered_list += [{'tlf': tlf, 'nom': db[tlf][0], \
                           'dept': db[tlf][1], 'tlf_dir': db[tlf][2], \
-                          'email': db[tlf][3]}]
+                          'email': db[tlf][3], 'area': db[tlf][4]}]
                 
     return render_template('main.html', \
                            title = "Buscador", \

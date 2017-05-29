@@ -13,6 +13,10 @@ blu_tlf = Blueprint('tlf', __name__, template_folder='templates')
 def insert():
     tlf = request.form['tlf']
     nom = request.form['nom']
+    dept = request.form['dept']
+    tlf_dir = request.form['tlf_dir']
+    email = request.form['email']
+    area = request.form['area']
 
     if (len(tlf) == 0) or (len(nom) == 0):
         flash("S'han de completar tots els camps", "error")
@@ -34,7 +38,10 @@ def insert():
         flash("Aquest nom ja existeix", "error")
         return redirect(url_for('admin'))
 
-    insertTLF(formatTLF(tlf), formatNom(nom))
+    insertTLF(formatTLF(tlf), formatNom(nom), \
+              formatNom(dept), formatTLF(tlf_dir), \
+              formatNom(email), formatNom(area))
+    
     flash("Telèfon afegit correctament")
     return redirect(url_for('admin'))
 
@@ -83,48 +90,49 @@ def upload():
 
 @blu_tlf.route("/update", methods=['POST'])
 def update():
+    old_tlf = request.form['old_tlf']
     nou_tlf = request.form['nou_tlf']
     nou_nom = request.form['nou_nom']
-    old_tlf = request.form['old_tlf']
-
-    if len(old_tlf) == 0:
-        flash("Escriu quin telèfon vols modificar", "error")
-        return redirect(url_for('admin'))
-
-    if not checkRepeatTLF(old_tlf):
-        flash("El telèfon a modificar no existeix", "error")
-        return redirect(url_for('admin'))
+    nou_dept = request.form['nou_dept']
+    nou_tlf_dir = request.form['nou_tlf_dir']
+    nou_email = request.form['nou_email']
+    nou_area = request.form['nou_area']
     
+    old_tlf = request.form['old_tlf']
+    old_tlf = request.form['old_tlf']
+    old_nom = request.form['old_nom']
+    old_dept = request.form['old_dept']
+    old_tlf_dir = request.form['old_tlf_dir']
+    old_email = request.form['old_email']
+    old_area = request.form['old_area']
+
     if not nou_tlf.isdigit():
         flash("El telèfon només pot contenir digits", "error")
         return redirect(url_for('admin'))
+
+    if (len(nou_nom) == 0) or (len(nou_tlf) == 0):
+        flash("És necessari un nom i telèfon", "error")
+        return redirect(url_for('admin'))
+    
+    deleteTLF(formatTLF(old_tlf))
     
     if checkRepeatTLF(nou_tlf):
+        insertTLF(formatTLF(old_tlf), formatNom(old_nom), \
+                  formatNom(old_dept), formatTLF(old_tlf_dir), \
+                  formatNom(old_email), formatNom(old_area))
         flash("Aquest telèfon ja existeix", "error")
         return redirect(url_for('admin'))
                         
     if checkRepeatNom(nou_nom):
+        insertTLF(formatTLF(old_tlf), formatNom(old_nom), \
+                  formatNom(old_dept), formatTLF(old_tlf_dir), \
+                  formatNom(old_email), formatNom(old_area))
         flash("Aquest nom ja existeix", "error")
         return redirect(url_for('admin'))
 
-    if (len(nou_nom) == 0) and (len(nou_tlf) == 0):
-        flash("No has escrit res per modificar", "error")
-        return redirect(url_for('admin'))
-
-    if len(nou_nom) == 0:
-        # Només update de tlf
-        updateTLF(old_tlf, nou_tlf)
-        flash("Contacte modificat")
-        return redirect(url_for('admin'))
-        
-    if len(nou_tlf) == 0:
-        # Només update de nom
-        updateNom(old_tlf, nou_nom)
-        flash("Contacte modificat")
-        return redirect(url_for('admin'))
-
-    updateNom(old_tlf, nou_nom)
-    updateTLF(old_tlf, nou_tlf)
+    insertTLF(formatTLF(nou_tlf), formatNom(nou_nom), \
+              formatNom(nou_dept), formatTLF(nou_tlf_dir), \
+              formatNom(nou_email), formatNom(nou_area))
     flash("Contacte modificat")
     return redirect(url_for('admin'))
 
@@ -138,16 +146,26 @@ def delete():
     else:
         return "El contacte %s ja esta eliminar o error" % (delete_tlf,)
 
-@blu_tlf.route("/contacte/<user>", methods=['GET'])
-def contacte(user):
-    contacte = getContacte(user)
-    return render_template('contacte.html', title=user, \
-                           tlf=contacte[0], nom=contacte[1], \
-                           dept=contacte[2], tlf_dir=contacte[3], \
-                           email=contacte[4], area=contacte[5])
+@blu_tlf.route("/contacte/<contacte>/", methods=['GET'])
+@blu_tlf.route("/contacte/<contacte>/<user>", methods=['GET'])
+def contacte(contacte, user='main'):
+    contactes = getContacte(contacte)
     
-@blu_tlf.route("/dept/<dept>", methods=['GET'])
-def dept(dept):
+    if user == 'main':
+        admin = False
+    else:
+        admin = True
+        
+    return render_template('contacte.html', \
+                           admin = admin, \
+                           title=contacte, \
+                           tlf=contactes[0], nom=contactes[1], \
+                           dept=contactes[2], tlf_dir=contactes[3], \
+                           email=contactes[4], area=contactes[5])
+
+@blu_tlf.route("/dept/<dept>/", methods=['GET'])
+@blu_tlf.route("/dept/<dept>/<user>", methods=['GET'])
+def dept(dept, user='main'):
     db = getDepartamentDict(dept)
     sorted_tlfs = sorted(map(int, db.keys()))
     
@@ -156,8 +174,12 @@ def dept(dept):
         ordered_list += [{'tlf': tlf, 'nom': db[tlf][0], \
                           'dept': db[tlf][1], 'tlf_dir': db[tlf][2], \
                           'email': db[tlf][3], 'area': db[tlf][4]}]
+    if user == 'main':
+        admin = False
+    else:
+        admin = True
         
     return render_template('departament.html', \
                            title = dept, \
                            resultDict = ordered_list, \
-                           admin = False)
+                           admin = admin)

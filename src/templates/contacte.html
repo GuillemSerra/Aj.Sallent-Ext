@@ -2,48 +2,50 @@
 
 {% block body %}
 
+{% if admin %}
+<form action="{{ url_for('tlf.update') }}" method="post" accept-charset="utf-8">
+  <input type="hidden" name="old_tlf" value="{{ tlf }}">
+  <input type="hidden" name="old_nom" value="{{ nom }}">
+  <input type="hidden" name="old_dept" value="{{ dept }}">
+  <input type="hidden" name="old_tlf_dir" value="{{ tlf_dir }}">
+  <input type="hidden" name="old_email" value="{{ email }}">
+  <input type="hidden" name="old_area" value="{{ area }}">
+  <input type="text" name="nou_tlf" value="{{ tlf }}">
+  <input type="text" name="nou_nom" value="{{ nom }}">
+  <input id="buscador_dept_mod" type="text" name="nou_dept" value="{{ dept }}">
+  <input type="text" name="nou_tlf_dir" value="{{ tlf_dir }}">
+  <input type="text" name="nou_email" value="{{ email }}">
+  <input type="text" name="nou_area" value="{{ area }}">
+  <div style="clear:both"></div>
+  <br>
+  <input class="btn" type="submit" value="Modificar">
+</form>
+<br>
+<input class="btn" type="submit" id="btn-{{ tlf }}"
+       data-tlf="{{ tlf }}"
+       data-nom="{{ nom }}"
+       data-dept="{{ dept }}"
+       data-tlf_dir="{{ tlf_dir }}"
+       data-email="{{ email }}"
+       data-area="{{ area }}"
+       value="ESBORRAR"
+       style="color: white; background: #990000; font-weight: bold;"
+       onclick="submitForm('{{ tlf }}')">
+<div style="clear:both"></div>
+{% else %}
 <ul>
   <li><b>Telèfon</b>: {{ tlf }}</li>
   <li><b>Nom</b>: {{ nom }}</li>
-  <li><b>Departament</b>: <a href="{{ url_for('tlf.dept', dept=dept) }}">{{ dept }}</a></li>
+  <li><b>Departament</b>: <a \
+			     {% if admin %}
+			     href="{{ url_for('tlf.dept', dept=dept, user='admin') }}">
+                             {% else %}
+                             href="{{ url_for('tlf.dept', dept=dept, user='main') }}">
+                             {% endif %}
+                             {{ dept }}</a></li>
   <li><b>Telèfon directe</b>: {{ tlf_dir }}</li>
   <li><b>email</b>: <a href="mailto:{{ email }}?Subject=" target="_top">{{ email }}</a></li>
   <li><b>Àrea</b>: {{ area }}</li>
 </ul>
-
-{% if admin %}
-<br>
-<div id="accordion">  
-  <h3>Afegeix un nou contacte</h3>
-  <div>
-    <form action="{{ url_for('tlf.insert') }}" method="post" accept-charset="utf-8">
-      <input type="text" placeholder="Telèfon (màx. 9 caràcters)" name="tlf">
-      <input type="text" placeholder="Nom" name="nom">
-      <input type="text" placeholder="Departament" name="dept">
-      <input type="text" placeholder="Telèfon directe" name="tlf_dir">
-      <input type="text" placeholder="email" name="email">
-      <input type="text" placeholder="Àrea" name="area">
-      <br><br>
-      <input class="btn" type="submit" value="Afegir">
-    </form>
-  </div>
-
-  <h3>Modifica el contacte</h3>
-  <div>
-    <form action="{{ url_for('tlf.update') }}" method="post" accept-charset="utf-8">
-      <input type="hidden" name="old_tlf" value="{{ tlf  }}">
-      <input type="text" name="nou_tlf" placeholder="Nou telèfon">
-      <input type="text" name="nou_nom" placeholder="Nou nom">
-      <input type="text" name="nou_dept" placeholder="Nou departament">
-      <input type="text" name="nou_tlf_dir" placeholder="Nou tlf directe">
-      <input type="text" name="nou_email" placeholder="Nou email">
-      <input type="text" name="nou_area" placeholder="Nova àrea">
-      <br>
-      <input class="btn" type="submit" value="Modificar">
-    </form>
-  </div>
-
-</div>
 {% endif %}
-
 {% endblock %}
