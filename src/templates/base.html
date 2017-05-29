@@ -8,7 +8,7 @@
     
     <!-- Import jQuery UI --> 
     <link href="{{ url_for('static', filename='css/jquery-ui.css') }}" rel="stylesheet">
-		
+    
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
     <link href="{{ url_for('static', filename='css/base.css') }}" rel="stylesheet">
@@ -16,21 +16,21 @@
     <!-- Import jQuery before Materialize -->
     <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-2.1.1.min.js') }}" ></script>
     <script src="{{ url_for('static', filename='js/jquery-ui.js') }}" ></script>
-	
+    
     <!-- Compiled and minified JavaScript -->
     <script src="{{ url_for('static', filename='js/materialize.min.js') }}"></script> 
   </head>
   <body>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <div id="flash">
-        {% for category, message in messages %}
-          <div class="flash {{ category }}">{{ message }}</div>
-        {% endfor %}
-        </div>
-        <script>setTimeout(function() {document.getElementById("flash").style.display = "none";}, 2000);</script>
-      {% endif %}
+    {% if messages %}
+    <div id="flash">
+      {% for category, message in messages %}
+      <div class="flash {{ category }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+    <script>setTimeout(function() {document.getElementById("flash").style.display = "none";}, 2000);</script>
+    {% endif %}
     {% endwith %}
 
     <header>
@@ -45,33 +45,44 @@
       <div class="container">
 	
 	{% if admin %}
-	<form action="{{ url_for('buscador', user='admin') }}" method="post" accept-charset="utf-8">
+	<form action="{{ url_for('buscador.tlf', user='admin') }}" method="post" accept-charset="utf-8">
 	  <input id="buscador" name="buscador" placeholder="Busca telèfon o nom">
 	  <br>
 	  <input class="btn" type="submit" value="Buscar">
 	</form>
 	{% else %}
-	<form action="{{ url_for('buscador', user='main') }}" method="post" accept-charset="utf-8">
-	  <input id="buscador" name="buscador" placeholder="Busca telèfon o nom">
-	  <br>
-	  <input class="btn" type="submit" value="Buscar">
-	</form>
+	<div id="left">
+	  <form action="{{ url_for('buscador.tlf', user='main') }}" method="post" accept-charset="utf-8">
+	    <input id="buscador_tlf" name="buscador_tlf" placeholder="Busca telèfon o nom">
+	    <br>
+	    <input class="btn" type="submit" value="Buscar">
+	  </form>
+	</div>
+	
+	<div id="right">
+	  <form action="{{ url_for('buscador.dept', user='main') }}" method="post" accept-charset="utf-8">
+	    <input id="buscador_dept" name="buscador_dept" placeholder="Busca departament">
+	    <br>
+	    <input class="btn" type="submit" value="Buscar">
+	  </form>
+	</div>
 	{% endif %}
-	<br>
 	
         {% block body %}	
         {% endblock %}
-	
+	<br>
+	<a href="{{ url_for('main') }}">Torna a l'inici</a>
+
       </div>
     </main>
 
     <footer>
-    developed by Departament TIC
+      developed by Departament TIC
     </footer>
   </body>
   <script>
-  function submitForm(tlf)
-  {
+ function submitForm(tlf)
+{
     var http = new XMLHttpRequest();
     var btn = document.getElementById('btn-'+tlf);
     var nom = btn.getAttribute("data-nom");
@@ -109,13 +120,25 @@ $( function() {
 	active: 0
     });
 } );
-  $(document).ready(function() {
+
+$(document).ready(function() {
     $.ajax({
-	url: '{{ url_for("autocomplete") }}'
+	url: '{{ url_for("buscador.autocomplete_tlf") }}'
     }).done(function (data) {
-	$('#buscador').autocomplete({
+	$('#buscador_tlf').autocomplete({
 	    source: data.json_list,
 	    minLength: 2
+	});
+    });
+});
+
+$(document).ready(function() {
+    $.ajax({
+	url: '{{ url_for("buscador.autocomplete_dept") }}'
+    }).done(function (data) {
+	$('#buscador_dept').autocomplete({
+	    source: data.json_list,
+	    minLength: 1
 	});
     });
 });

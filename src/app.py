@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 from flask import Flask, render_template, jsonify, request, redirect, url_for, flash
 from tlf import blu_tlf
+from buscador import blu_busc
 from database import *
-import PyICU
 import os
-import subprocess
 import sys
 
 reload(sys)
@@ -17,6 +15,7 @@ app.config.from_object(__name__)
 app.config.from_envvar('SERRA_SETTINGS', silent=True)
 app.secret_key = os.environ["SESSION_SECRET_KEY"]
 app.register_blueprint(blu_tlf, url_prefix='/tlf')
+app.register_blueprint(blu_busc, url_prefix='/buscador')
 app.config['JSON_AS_ASCII'] = False # jsonify utf-8
 
 @app.route('/', methods = ["GET"])
@@ -51,69 +50,7 @@ def admin():
                            resultDict = ordered_list, \
                            admin = True)
 
-@app.route('/buscador/<user>', methods = ['POST'])
-def buscador(user):
-    busc_value_dirty = request.form["buscador"]
-    
-    if (len(busc_value_dirty) == 0):
-        flash("Escriu telèfon o nom a buscar", "error")
-        return redirect(url_for(user))
-    
-    busc_value_clean = busc_value_dirty.split('-')[0]
 
-    if (formatTLF(busc_value_clean).isdigit()):
-        # S'ha buscat un telefon
-        busc_value_clean = formatTLF(busc_value_clean)
-        db = getAllDBLike(tlf=busc_value_clean)
-        if len(db) == 0:
-            flash("Aquest telèfon no existeix", "error")
-            return redirect(url_for(user))
-    else:
-        # S'ha buscat un nom
-        busc_value_clean = formatNom(busc_value_clean)
-        db = getAllDBLike(nom=busc_value_clean)
-        if len(db) == 0:
-            flash("Aquest nom no existeix", "error")
-            return redirect(url_for(user))
-          
-    sorted_tlfs = sorted(map(int, db.keys()))
-
-    ordered_list = []
-    for tlf in map(str, sorted_tlfs):
-        ordered_list += [{'tlf': tlf, 'nom': db[tlf][0], \
-                          'dept': db[tlf][1], 'tlf_dir': db[tlf][2], \
-                          'email': db[tlf][3]}]
-
-    if user == 'main':
-        admin = False
-    else:
-        admin = True
-
-    # Si nomes hi ha un resultat, mostrem informació completa
-    if len(ordered_list) == 1:
-        contacte = ordered_list[0]
-        return url_for('tlf.contacte', user=contacte['nom'])
-    else:
-        return render_template('main.html', \
-                               title = "Buscador", \
-                               resultDict = ordered_list, \
-                               admin = admin)
-    
-@app.route("/autocomplete", methods=['GET'])
-def autocomplete():
-    search = request.args.get('buscador')
-
-    collator = PyICU.Collator.createInstance(PyICU.Locale('es_ES.UTF-8'))
-    
-    db = getAllTLFDict()
-    sorted_tlfs = sorted(map(int, db.keys()))
-    
-    sorted_db = []
-    for tlf in map(str, sorted_tlfs):
-        sorted_db += [tlf + ' - ' + db[tlf][0]]
-    
-    app.logger.debug(search)
-    return jsonify(json_list = sorted_db)
 
 if __name__ == "__main__":
     app.debug = 1

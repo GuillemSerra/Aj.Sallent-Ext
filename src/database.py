@@ -31,11 +31,11 @@ def getAllTLFDict():
 
     return tlfDict
 
-def getAllDBLike(tlf = '0000000000', nom = '0000000000'):
+def getAllDBLike(tlf = '0000000000', nom = '0000000000', dept='000000000'):
     contactDict = {}
     
     with connectMariaDB() as cur:
-        cur.execute("SELECT * FROM telefons WHERE tlf LIKE %s OR nom LIKE %s", ('%'+tlf+'%', '%'+nom+'%'))
+        cur.execute("SELECT * FROM telefons WHERE tlf LIKE %s OR nom LIKE %s OR dept LIKE %s", ('%'+tlf+'%', '%'+nom+'%', '%'+dept+'%'))
         contacts = cur.fetchall()
 
         for row in contacts:
@@ -52,7 +52,30 @@ def getContacte(nom):
         return None
     else:
         return row[1:]
-           
+
+def getDepartaments():
+    deptList = []
+
+    with connectMariaDB() as cur:
+        cur.execute("SELECT dept FROM telefons")
+        rows  = cur.fetchall()
+
+        for row in rows:
+            if row[0] not in deptList and row[0] != '':
+                deptList += [row[0]]
+
+    return deptList
+    
+def getDepartamentDict(dept):
+    deptDict = {}
+    
+    with connectMariaDB() as cur:
+        cur.execute("SELECT * FROM telefons WHERE dept=%s", (dept,))
+        for row in cur.fetchall():
+            deptDict[row[1]] = [row[2], row[3], row[4], row[5], row[6]]
+
+    return deptDict
+    
 def getTLF(nom):
     with connectMariaDB() as cur:
         cur.execute("SELECT tlf FROM telefons where nom=%s", (nom,))

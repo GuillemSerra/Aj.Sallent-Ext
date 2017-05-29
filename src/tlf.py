@@ -141,11 +141,23 @@ def delete():
 @blu_tlf.route("/contacte/<user>", methods=['GET'])
 def contacte(user):
     contacte = getContacte(user)
-    return render_template('contacte.html', title='Buscador', \
+    return render_template('contacte.html', title=user, \
                            tlf=contacte[0], nom=contacte[1], \
                            dept=contacte[2], tlf_dir=contacte[3], \
                            email=contacte[4], area=contacte[5])
-
+    
 @blu_tlf.route("/dept/<dept>", methods=['GET'])
 def dept(dept):
-    return dept
+    db = getDepartamentDict(dept)
+    sorted_tlfs = sorted(map(int, db.keys()))
+    
+    ordered_list = []
+    for tlf in map(str, sorted_tlfs):
+        ordered_list += [{'tlf': tlf, 'nom': db[tlf][0], \
+                          'dept': db[tlf][1], 'tlf_dir': db[tlf][2], \
+                          'email': db[tlf][3], 'area': db[tlf][4]}]
+        
+    return render_template('departament.html', \
+                           title = dept, \
+                           resultDict = ordered_list, \
+                           admin = False)

@@ -30,6 +30,18 @@ footer {
     margin: 0 auto;
 }
 
+#left {
+    float: left;
+    width: 63%;
+    margin-bottom: 20px;
+}
+
+#right {
+    float: right;
+    width: 35%;
+    margin-bottom: 20px;
+}
+
 p {
     margin: 1em;
 }
