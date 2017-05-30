@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, render_template, jsonify, request, redirect, url_for, flash
 from tlf import blu_tlf
-from buscador import blu_busc
+from buscador import blu_busc, order_tlfs
 from database import *
 import os
 import sys
@@ -21,13 +21,9 @@ app.config['JSON_AS_ASCII'] = False # jsonify utf-8
 @app.route('/', methods = ["GET"])
 def main():
     db = getAllTLFDict()
-    sorted_tlfs = sorted(map(int, db.keys()))
-    
-    ordered_list = []
-    for tlf in map(str, sorted_tlfs):
-        ordered_list += [{'tlf': tlf, 'nom': db[tlf][0], \
-                          'dept': db[tlf][1], 'tlf_dir': db[tlf][2], \
-                          'email': db[tlf][3], 'area': db[tlf][4]}]
+
+    # Mètode per no tenir problemes amb leading 0s
+    ordered_list = order_tlfs(db)
         
     return render_template('main.html', \
                            title = "Buscador", \

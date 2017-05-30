@@ -3,6 +3,7 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify, make_response
 from database import *
 from werkzeug.utils import secure_filename
+from buscador import order_tlfs
 import csv
 import StringIO
 import os
@@ -167,13 +168,9 @@ def contacte(contacte, user='main'):
 @blu_tlf.route("/dept/<dept>/<user>", methods=['GET'])
 def dept(dept, user='main'):
     db = getDepartamentDict(dept)
-    sorted_tlfs = sorted(map(int, db.keys()))
     
-    ordered_list = []
-    for tlf in map(str, sorted_tlfs):
-        ordered_list += [{'tlf': tlf, 'nom': db[tlf][0], \
-                          'dept': db[tlf][1], 'tlf_dir': db[tlf][2], \
-                          'email': db[tlf][3], 'area': db[tlf][4]}]
+    ordered_list = order_tlfs(db)
+
     if user == 'main':
         admin = False
     else:

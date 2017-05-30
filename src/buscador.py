@@ -6,9 +6,21 @@ import PyICU
 
 blu_busc = Blueprint('buscador', __name__, template_folder='templates')
 
-@blu_busc.route('/lel/<man>', methods = ['GET'])
-def test(man):
-    return man
+def order_tlfs(db):
+    OG_keys = {}
+    for element in db.keys():
+        OG_keys[int(element)] = element
+        
+    sorted_tlfs = sorted(map(int, db.keys()))
+    
+    ordered_list = []
+    for tlf in sorted_tlfs:
+        params = db[OG_keys[tlf]]
+        ordered_list += [{'tlf': OG_keys[tlf], 'nom': params[0], \
+                          'dept': params[1], 'tlf_dir': params[2], \
+                          'email': params[3], 'area': params[4]}]
+
+    return ordered_list
     
 @blu_busc.route('/tlf/<user>', methods = ['POST'])
 def tlf(user):
@@ -35,13 +47,7 @@ def tlf(user):
             flash("Aquest nom no existeix", "error")
             return redirect(url_for(user))
           
-    sorted_tlfs = sorted(map(int, db.keys()))
-
-    ordered_list = []
-    for tlf in map(str, sorted_tlfs):
-        ordered_list += [{'tlf': tlf, 'nom': db[tlf][0], \
-                          'dept': db[tlf][1], 'tlf_dir': db[tlf][2], \
-                          'email': db[tlf][3], 'area': db[tlf][4]}]
+    ordered_list = order_tlfs(db)
 
     if user == 'main':
         admin = False
@@ -72,16 +78,11 @@ def dept(user):
         flash("Aquest departament no existeix", "error")
         return redirect(url_for(user))
           
-    sorted_tlfs = sorted(map(int, db.keys()))
-
-    ordered_list = []
+    ordered_list = order_tlfs(db)
     depts = []
-    for tlf in map(str, sorted_tlfs):
-        if db[tlf][1] not in depts:
-            depts += [db[tlf][1]]
-        ordered_list += [{'tlf': tlf, 'nom': db[tlf][0], \
-                          'dept': db[tlf][1], 'tlf_dir': db[tlf][2], \
-                          'email': db[tlf][3], 'area': db[tlf][4]}]
+    for element in ordered_list:
+        if element['dept'] not in depts:
+            depts += [element['dept']]
 
     if user == 'main':
         admin = False
@@ -101,11 +102,16 @@ def dept(user):
 @blu_busc.route("/autocomplete_tlf", methods=['GET'])
 def autocomplete_tlf():
     db = getAllTLFDict()
+    
+    OG_keys = {}
+    for element in db.keys():
+        OG_keys[int(element)] = element
+        
     sorted_tlfs = sorted(map(int, db.keys()))
     
     sorted_db = []
-    for tlf in map(str, sorted_tlfs):
-        sorted_db += [tlf + ' - ' + db[tlf][0]]
+    for tlf in sorted_tlfs:
+        sorted_db += [OG_keys[tlf] + ' - ' + db[OG_keys[tlf]][0]]
     
     return jsonify(json_list = sorted_db)
 
