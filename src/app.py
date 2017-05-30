@@ -33,14 +33,9 @@ def main():
 @app.route('/admin', methods=['GET'])
 def admin():
     db = getAllTLFDict()
-    sorted_tlfs = sorted(map(int, db.keys()))
+
+    ordered_list = order_tlfs(db)
     
-    ordered_list = []
-    for tlf in map(str, sorted_tlfs):
-        ordered_list += [{'tlf': tlf, 'nom': db[tlf][0], \
-                          'dept': db[tlf][1], 'tlf_dir': db[tlf][2], \
-                          'email': db[tlf][3], 'area': db[tlf][4]}]
-                
     return render_template('main.html', \
                            title = "Buscador", \
                            resultDict = ordered_list, \
@@ -49,7 +44,7 @@ def admin():
 
 
 if __name__ == "__main__":
-    app.debug = 1
+    app.debug = 0
     app.run('0.0.0.0', port=80, threaded=True)
 
 

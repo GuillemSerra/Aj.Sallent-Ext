@@ -15,7 +15,8 @@ def connectMariaDB():
 
 def insertTLF(tlf, nom, dept='', tlf_dir='', email='', area=''):
     with connectMariaDB() as cur:
-        cur.execute("INSERT INTO telefons VALUES(id, %s, %s, %s, %s, %s, %s)", (tlf, nom, dept, tlf_dir, email, area))
+        cur.execute("INSERT INTO telefons VALUES(id, %s, %s, %s, %s, %s, %s)", \
+                    (tlf, nom, dept, tlf_dir, email, area))
 
 def deleteTLF(tlf):
     with connectMariaDB() as cur:
